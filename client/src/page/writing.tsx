@@ -143,7 +143,11 @@ function uploadImage(file: File, onSuccess: (url: string) => void, showAlert: Sh
         showAlert(t("upload.failed", { error: error.value }));
       }
       if (data) {
-        onSuccess(data);
+        let imageUrl = data;
+        if (imageUrl && !imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+          imageUrl = 'https://' + imageUrl;
+        }
+        onSuccess(imageUrl);
       }
     })
     .catch((e: any) => {

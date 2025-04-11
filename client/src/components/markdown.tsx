@@ -71,6 +71,13 @@ export function Markdown({ content }: { content: string }) {
             previousContent,
             offset
           );
+          
+          // 确保图片URL包含https://前缀
+          let imageUrl = src;
+          if (imageUrl && !imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+            imageUrl = 'https://' + imageUrl;
+          }
+          
           const Image = ({
             rounded,
             scale,
@@ -79,10 +86,10 @@ export function Markdown({ content }: { content: string }) {
             scale: string;
           }) => (
             <img
-              src={src}
+              src={imageUrl}
               {...props}
               onClick={() => {
-                show(src)
+                show(imageUrl)
               }}
               className={`mx-auto ${rounded ? "rounded-xl" : ""}`}
               style={{ zoom: scale }}
@@ -353,7 +360,12 @@ export function Markdown({ content }: { content: string }) {
       const images = parent.querySelectorAll("img");
       slidesLocal = Array.from(images)
         .map((image) => {
-          const url = image.getAttribute("src") || "";
+          let url = image.getAttribute("src") || "";
+          // 确保URL包含https://前缀
+          if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+          }
+          
           const filename = url.split("/").pop() || "";
           const alt = image.getAttribute("alt") || "";
           return {
